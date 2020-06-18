@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const PostSchema = mongoose.Schema({
-    Id: {
-      type: String,
-      required: true  
-    },
     Name: {
         type: String,
         required: true
@@ -24,16 +20,16 @@ const PostSchema = mongoose.Schema({
 
     SKU:{
         type: String,
-        required: false
+        required: true
     },
     Description:{
         type: String,
-        required: false
+        required: true
     },
     Details:{
         type: String,
-        required: false
+        required: true
     },
 });
 
-module.exports = mongoose.model('Post', PostSchema);
+module.exports = mongoose.model('Products', PostSchema);
