@@ -56,7 +56,7 @@ module.exports = (app, cors, mongoose) => {
     app.get("/getAllProducts", async(req,res) =>{
         try{
             console.log("iniciando busqueda");
-            const products = await Products.find({'SKU': req.body.SKU,},);
+            const products = await Products.find();
             
             if (products.length == 0){
                 sendData(res, 404, {"error": "no data found"})
