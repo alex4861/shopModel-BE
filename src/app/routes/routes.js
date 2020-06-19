@@ -1,4 +1,5 @@
 const Products = require("../Model/Products");
+const Departaments = require("../Model/Departaments");
 
 const uri = 'mongodb+srv://isarn:isarn4861@cluster0-cjep0.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority'
 
@@ -32,10 +33,14 @@ module.exports = (app, cors, mongoose) => {
             Details: body.Details,
             Departament: body.Departament,
         })
+        const departament = new Departaments({
+            Name: body.Departament
+        })
         try{
-            const savedPost = await Data.save();
+            const savedPost = await Products.find();
+            const savedDep = await Departaments.find({Name: body.Departament})
             res.status(201);
-            res.send({resBody: "Se ejecutó de forma correcta"});
+            res.send({resBody: savedDep});
             res.end();
         }
         catch (error){
