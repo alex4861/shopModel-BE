@@ -13,11 +13,7 @@ app.use(require("cors")()); // allow Cross-domain requests
 app.set('port', process.env.PORT || 1234);
 require('./app/routes/routes')(app,cors, mongoose);
 
-https.createServer({
-  key: fs.readFileSync('./key.pem'),
-  cert: fs.readFileSync('./cert.pem'),
-  passphrase: 'Qwerty'
-}, app).listen(app.get('port'), () => {
+app.listen(app.get('port'), () => {
   console.log("Server is listening on port:"+app.get('port'));
 });
 ;
