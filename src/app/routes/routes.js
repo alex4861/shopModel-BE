@@ -18,9 +18,7 @@ module.exports = (app, cors, mongoose) => {
         var key = a;
         var json = { };
         json[key] = b;
-        res.status(200) 
-          res.send(json)
-          res.end();          
+          sendData(res, 200, json)       
       });
     app.post('/addProduct', async (req, res) =>{
         const body = req.body
@@ -37,38 +35,60 @@ module.exports = (app, cors, mongoose) => {
             Name: body.Departament
         })
         try{
-            const savedPost = await Products.find();
+            const FindedProd = await Products.find({ SKU: body.SKU});
             const savedDep = await Departaments.find({Name: body.Departament})
-            res.status(201);
-            res.send({resBody: savedDep});
-            res.end();
+            console.log(FindedProd.length);
+            var SavedProd;
+            if (FindedProd.length == 0){
+                SavedProd = await Data.save()
+                if(savedDep.length == 0){
+                    await departament.save();
+                }
+            }
+            else{
+                sendData(res, 500, {error: "El producto con el SKU "+body.SKU+" ya existe", "departments": await Departaments.find()})       
+                return   
+            }
+            sendData(res, 201, {resBody: SavedProd})       
         }
-        catch (error){
-            res.status(500);
-            res.send({error: error});
-            res.end();
-        }
+        catch (error){ sendData(res, 500, {error: error}) }
     });
     app.get("/getAllProducts", async(req,res) =>{
         try{
             console.log("iniciando busqueda");
-            const products = await Products.find();
+            const products = await Products.find({'SKU': req.body.SKU,},);
             
             if (products.length == 0){
-                res.status(200);
+                sendData(res, 404, {"error": "no data found"})
+                return
+            }
+            sendData(res, 200, {"Data": products})
+
+        }
+        catch(error){sendData(res, 500, {error: error})}
+    });
+
+
+    app.get("/getDepartments", async (req, res) =>{
+        try {
+            console.log("buscando");
+            
+            const savedDep = await Departaments.find()
+            if (savedDep.length == 0){
+                res.status(404)
                 res.send({"error": "no data found"});
                 res.end()     
                 return
             }
-            res.status(200);
-            res.send({"Data": products});
-            res.end()
-        }
-        catch(error){
-            res.status(500)
-            res.send(error)
-            res.end()
-        }
-    });
+            sendData(res, 200, savedDep)
+        } catch (error) {sendData(res, 500, {error: error})}
+    })
+
+    function sendData(res, status, Data){
+        res.status(status);
+        res.send(Data)
+        res.end();
+
+    }
       
 }
