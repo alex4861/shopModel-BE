@@ -90,5 +90,20 @@ module.exports = (app, cors, mongoose) => {
         res.end();
 
     }
+
+    app.get("/getProductFromDepartament/:departament", async(req,res) =>{
+        try{
+            console.log("iniciando busqueda");
+            const products = await Products.find({Departament: req.params.departament});
+            
+            if (products.length == 0){
+                sendData(res, 404, {"error": "no data found"})
+                return
+            }
+            sendData(res, 200, {"Data": products})
+
+        }
+        catch(error){sendData(res, 500, {error: error})}
+    });
       
 }
